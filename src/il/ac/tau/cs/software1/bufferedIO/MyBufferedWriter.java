@@ -2,47 +2,58 @@ package il.ac.tau.cs.software1.bufferedIO;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
+public class MyBufferedWriter implements IBufferedWriter {
+    private final FileWriter fileWriter;
+    private final char[] buffer;
+    private int position = 0;
+    private boolean closed = false;
 
-/**************************************
- *  Add your code to this class !!!   *
- **************************************/
+    public MyBufferedWriter(FileWriter fileWriter, int bufferSize) {
+        if (bufferSize <= 0) {
+            throw new IllegalArgumentException("bufferSize must be positive");
+        }
+        this.fileWriter = Objects.requireNonNull(fileWriter, "fileWriter");
+        this.buffer = new char[bufferSize];
+    }
 
-public class MyBufferedWriter implements IBufferedWriter{
-	
-	private FileWriter fWriter;
-	private char[] buffer;
-	
-	public MyBufferedWriter(FileWriter fWriter, int bufferSize){
-		this.fWriter = fWriter;
-		this.buffer = new char[bufferSize];
-	}
+    @Override
+    public void write(String str) throws IOException {
+        ensureOpen();
+        Objects.requireNonNull(str, "str");
+        for (int i = 0; i < str.length(); i++) {
+            buffer[position] = str.charAt(i);
+            position++;
+            if (position == buffer.length) {
+                flushBuffer();
+            }
+        }
+    }
 
-	
-	@Override
-	public void write(String str) throws IOException {
-		if (buffer.length == 0) {
-			return;
-		}
-		int writeCnt = 0;
-		int n = str.length();
-		for (int i = 0; i < Math.ceil((double)n/buffer.length); i++) {
-			buffer = new char[buffer.length];
-			for (int j = 0; j < 10 && (writeCnt*buffer.length + j) < n; j++) {
-				buffer[j] = str.charAt(writeCnt*buffer.length + j);
-			}
-			fWriter.write(buffer);
-			writeCnt++;
-		}
-	}
-	
-	@Override
-	public void close() throws IOException {
-		String notWritten = new String(buffer);
-		if (notWritten == "") {
-			write(notWritten);
-		}
-		fWriter.close();
-	}
+    @Override
+    public void close() throws IOException {
+        if (closed) {
+            return;
+        }
+        try {
+            flushBuffer();
+        } finally {
+            closed = true;
+            fileWriter.close();
+        }
+    }
 
+    private void flushBuffer() throws IOException {
+        if (position > 0) {
+            fileWriter.write(buffer, 0, position);
+            position = 0;
+        }
+    }
+
+    private void ensureOpen() throws IOException {
+        if (closed) {
+            throw new IOException("writer is closed");
+        }
+    }
 }

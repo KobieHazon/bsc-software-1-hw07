@@ -3,29 +3,29 @@ package il.ac.tau.cs.software1.predicate;
 import java.util.List;
 
 public class Store<T extends Product> {
-	private List<T> inventory;
-	
-	public Store(List <T> inventory) {
-		this.inventory = inventory;
-	}
+    private final List<T> inventory;
 
-	public List<T> getInventory() {
-		return inventory;
-	}
+    public Store(List<T> inventory) {
+        this.inventory = inventory;
+    }
 
-	public String getInventoryDescription() { // Q4
-		String inventoryDesc = "";
-		for (T product: this.inventory) {
-			inventoryDesc += product.getDescription();
-		}
-		return inventoryDesc; 
-	}
+    public List<T> getInventory() {
+        return inventory;
+    }
 
-	public void transform(Predicate<T> pred, Action<T> action) { // Q5
-		for (T product: this.inventory) {
-			if (pred.test(product)) {
-				action.performAction(product);
-			}
-		}
-	}
+    public String getInventoryDescription() {
+        StringBuilder inventoryDescription = new StringBuilder();
+        for (T product : inventory) {
+            inventoryDescription.append(product.getDescription());
+        }
+        return inventoryDescription.toString();
+    }
+
+    public void transform(Predicate<T> predicate, Action<T> action) {
+        for (T product : inventory) {
+            if (predicate.test(product)) {
+                action.performAction(product);
+            }
+        }
+    }
 }

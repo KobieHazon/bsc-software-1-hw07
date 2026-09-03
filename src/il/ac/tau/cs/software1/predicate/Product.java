@@ -3,23 +3,21 @@ package il.ac.tau.cs.software1.predicate;
 import java.util.List;
 
 public interface Product {
+    double getPrice();
 
-	double getPrice();
+    void setPrice(double newPrice);
 
-	void setPrice(double newPrice);
+    String getName();
 
-	String getName();
+    default String getDescription() {
+        return String.format("Name: %s%nPrice: %s%n", getName(), getPrice());
+    }
 
-	default String getDescription() {
-		return String.format("Name: %s%nPrice: %s%n", getName(), getPrice());
-	}
-	
-	static <T extends Product> double getTotalPrice(List<T> products) { // Q1
-		double sum = 0.0;
-		for (Product product: products) {
-			sum += product.getPrice();
-		}
-		return sum;
-	}
-
+    static <T extends Product> double getTotalPrice(List<T> products) {
+        double sum = 0.0;
+        for (Product product : products) {
+            sum += product.getPrice();
+        }
+        return sum;
+    }
 }
