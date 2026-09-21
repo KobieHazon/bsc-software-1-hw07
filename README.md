@@ -1,9 +1,6 @@
 # BSc Software 1 - Homework 7
 
 - Course: BSc Computer Science.
-- Available copy: May 2018.
-- Assignment brief: The matching Homework 7 handout was not found.
-- Maintenance changes: the current version normalizes source encoding and adds a local test harness, fixes the buffered writer implementation, makes IP representations compare consistently, and replaces the recovered buffered-I/O demo text with synthetic sample text.
 
 ## Contents
 
